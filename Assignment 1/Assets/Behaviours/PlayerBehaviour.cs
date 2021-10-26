@@ -33,7 +33,7 @@ public class PlayerBehaviour : MonoBehaviour
     // Handle movement
     void FixedUpdate()
     {
-        float dt = Time.deltaTime;
+        float dt = Time.fixedDeltaTime;
         UpdatePosition(dt);
         UpdateFacing(dt);
     }

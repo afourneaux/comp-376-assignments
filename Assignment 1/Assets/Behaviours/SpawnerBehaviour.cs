@@ -7,6 +7,7 @@ public class SpawnerBehaviour : MonoBehaviour
     public GameObject NPCPrefab;
     public int direction;
     float timeToNextSpawn;
+    int spawned = 0;
 
     void Start() {
         timeToNextSpawn = Random.Range(10.0f, 15.0f);
@@ -25,7 +26,7 @@ public class SpawnerBehaviour : MonoBehaviour
             GameObject townsfolk = Instantiate(NPCPrefab, transform.position, Quaternion.identity, transform.parent.parent);
             townsfolk.GetComponent<TownsfolkBehaviour>().direction = direction;
 
-            timeToNextSpawn = Random.Range(20.0f, 30.0f);
+            timeToNextSpawn = Random.Range(20.0f, 30.0f) - spawned * 0.1f;
         }
     }
     
