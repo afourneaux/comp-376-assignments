@@ -5,7 +5,6 @@ using UnityEngine;
 public class MenuHorseBehaviour : MonoBehaviour
 {
     float screenWidth = 800.0f;
-    float position = 0.0f;
     float speed = 100.0f;
     float timePassed = 0.0f;
 

@@ -5,10 +5,8 @@ using UnityEngine.UI;
 
 public class MenuStallBehaviour : MonoBehaviour
 {
-    float filth = 0.0f;
     float timeToReset = 3.0f;
     float timeSinceReset = 0.0f;
-    float maxFilth = 100.0f;
     GameObject marketFilth;
 
     void Start() {

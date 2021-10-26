@@ -83,9 +83,11 @@ public class MenuButtonHandler : MonoBehaviour
 
     public void OnMusicVolumeChanged() {
         OptionsController.musicVolume = musicSlider.value;
+        AudioController.instance.UpdateVolumeMusic(OptionsController.musicVolume);
     }
 
     public void OnSFXVolumeChanged() {
         OptionsController.sfxVolume = SFXSlider.value;
+        AudioController.instance.UpdateVolumeSFX(OptionsController.sfxVolume);
     }
 }

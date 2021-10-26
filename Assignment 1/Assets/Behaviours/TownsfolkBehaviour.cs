@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class TownsfolkBehaviour : MonoBehaviour
 {
     float speed;
-    bool isMove = false;
     Rigidbody2D rigidBody;
     public int direction = 0;
     public float waitTimer;
