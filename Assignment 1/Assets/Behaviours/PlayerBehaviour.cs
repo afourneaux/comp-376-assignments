@@ -6,18 +6,21 @@ using UnityEngine.UI;
 public class PlayerBehaviour : MonoBehaviour
 {
     public GameObject maskPrefab;
-    float speed = 300.0f;        // TODO: Parameter file
-    float angleSpeed = 1000.0f;
+    float speed;
+    float angleSpeed;
     Vector2 aimAt = new Vector2(0.0f, 1.0f);
     GameObject target;
     Rigidbody2D rigidBody;
     Animator animator;
-    public int masksToThrow = 3;
+    public int masksToThrow;
 
     void Start() {
         target = transform.Find("Target").gameObject;
         rigidBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        masksToThrow = GameController.instance.parameters.MAX_MASKS[OptionsController.maskCapacity];
+        speed = GameController.instance.parameters.PLAYER_SPEED;
+        angleSpeed = GameController.instance.parameters.PLAYER_ANGULAR_SPEED;
     }
 
     // Update is called once per frame

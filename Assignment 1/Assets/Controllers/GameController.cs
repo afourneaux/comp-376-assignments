@@ -29,6 +29,7 @@ public class GameController : MonoBehaviour
     TMPro.TMP_Text clockTextBox;
     PlayerBehaviour playerBehaviour;
     GameObject maskAlert;
+    public Parameters parameters;
     
 
     void OnEnable() {
@@ -43,6 +44,7 @@ public class GameController : MonoBehaviour
         clockTextBox = clock.GetComponent<TMPro.TMP_Text>();
         playerBehaviour = player.GetComponent<PlayerBehaviour>();
         maskAlert = cleaningBarrel.transform.Find("MaskAlert").gameObject;
+        parameters = new Parameters();
 
         timeToMajorWave = Random.Range(timeToEnd / 6.0f, timeToEnd / 3.0f);
     }

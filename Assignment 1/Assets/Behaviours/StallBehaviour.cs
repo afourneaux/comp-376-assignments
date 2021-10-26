@@ -47,7 +47,7 @@ public class StallBehaviour : MonoBehaviour
     
     public void AddFilth() {
         filth += 0.1f;
-        if (filth > 1.0f) {
+        if (filth >= 1.0f) {
             filth = 1.0f;
 
             Instantiate(AlertPrefab, transform.position, Quaternion.identity, transform.parent.parent).GetComponent<AlertBehaviour>().SetLifetime(5.0f);
@@ -55,7 +55,7 @@ public class StallBehaviour : MonoBehaviour
     }
 
     void SpreadFilth() {
-        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, 100.0f);
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, GameController.instance.parameters.DISEASE_RANGE[OptionsController.contagionDifficulty] * 4.0f);
         foreach (Collider2D collider in hitColliders) {
             if (Random.Range(0.0f, 1.0f) < filth) {
                 StallBehaviour stall = collider.GetComponent<StallBehaviour>();

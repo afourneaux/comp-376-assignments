@@ -36,15 +36,15 @@ public class TownsfolkBehaviour : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>();
 
         npcType = Random.Range(0, NPC_TYPE_COUNT);
-        isVaccinated = Random.Range(0.0f, 1.0f) < 0.1f;
-        isMasked = Random.Range(0.0f, 1.0f) < 0.3f;
+        isVaccinated = Random.Range(0.0f, 1.0f) < GameController.instance.parameters.VACCINATED[OptionsController.contagionDifficulty];
+        isMasked = Random.Range(0.0f, 1.0f) < GameController.instance.parameters.MASKERS[OptionsController.contagionDifficulty];
         if (isVaccinated) {
             isSick = false;
         } else {
-            isSick = Random.Range(0.0f, 1.0f) < 0.6f;
+            isSick = Random.Range(0.0f, 1.0f) < GameController.instance.parameters.INITIAL_SPREAD[OptionsController.contagionDifficulty];
         }
 
-        timeToNextCough = Random.Range(1.0f, 10.0f);
+        timeToNextCough = Random.Range(GameController.instance.parameters.COUGH_FREQUENCY[OptionsController.contagionDifficulty] / 2.0f, GameController.instance.parameters.COUGH_FREQUENCY[OptionsController.contagionDifficulty]);
 
         if (isMasked) {
             GetComponent<Image>().sprite = maskedSprites[npcType];
@@ -62,7 +62,7 @@ public class TownsfolkBehaviour : MonoBehaviour
         timeToNextCough -= dt;
         if (timeToNextCough <= 0) {
             Cough();
-            timeToNextCough = Random.Range(5.0f, 10.0f);
+            timeToNextCough = Random.Range(GameController.instance.parameters.COUGH_FREQUENCY[OptionsController.contagionDifficulty] / 2.0f, GameController.instance.parameters.COUGH_FREQUENCY[OptionsController.contagionDifficulty]);
         }
     }
 
@@ -156,7 +156,7 @@ public class TownsfolkBehaviour : MonoBehaviour
             AlertBehaviour alertBehaviour = alert.GetComponent<AlertBehaviour>();
             alertBehaviour.SetLifetime(1.0f);
 
-            Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, 48.0f);
+            Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, GameController.instance.parameters.DISEASE_RANGE[OptionsController.contagionDifficulty]);
             foreach (Collider2D collider in hitColliders) {
                 StallBehaviour stall = collider.GetComponent<StallBehaviour>();
                 if (stall != null) {
@@ -175,7 +175,7 @@ public class TownsfolkBehaviour : MonoBehaviour
         if (isMasked || isSick || isVaccinated) {
             return;
         }
-        if (Random.Range(0.0f, 1.0f) < 0.6f) {
+        if (Random.Range(0.0f, 1.0f) < GameController.instance.parameters.INFECT_CHANCE[OptionsController.contagionDifficulty]) {
             isSick = true;
         }
     }
