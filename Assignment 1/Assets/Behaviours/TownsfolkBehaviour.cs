@@ -6,22 +6,25 @@ using UnityEngine.UI;
 public class TownsfolkBehaviour : MonoBehaviour
 {
     float speed;
-    float angleSpeed = 1000.0f;
     bool isMove = false;
     Rigidbody2D rigidBody;
-    public int direction;
+    public int direction = 0;
     public float waitTimer;
-    float stepTimer;
+    float stepTimer = 0.0f;
     float stepTime = 0.3f;
     public float lifetime = 20.0f;
     int npcType;
-    bool masked;
+    bool isMasked;
+    bool isSick;
+    bool isVaccinated;
+    public float timeToNextCough;
+    public GameObject coughAlertPrefab;
 
     const int NPC_TYPE_COUNT = 2;
     public Sprite[] unmaskedSprites = new Sprite[NPC_TYPE_COUNT];
     public Sprite[] maskedSprites = new Sprite[NPC_TYPE_COUNT];
 
-    // Start is called before the first frame update
+
     void Start()
     {
         float r = Random.Range(0.2f, 1.0f);
@@ -33,16 +36,40 @@ public class TownsfolkBehaviour : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>();
 
         npcType = Random.Range(0, NPC_TYPE_COUNT);
-        masked = Random.Range(0.0f, 1.0f) > 0.4f;
+        isVaccinated = Random.Range(0.0f, 1.0f) < 0.1f;
+        isMasked = Random.Range(0.0f, 1.0f) < 0.3f;
+        if (isVaccinated) {
+            isSick = false;
+        } else {
+            isSick = Random.Range(0.0f, 1.0f) < 0.6f;
+        }
 
-        if (masked) {
+        timeToNextCough = Random.Range(1.0f, 10.0f);
+
+        if (isMasked) {
             GetComponent<Image>().sprite = maskedSprites[npcType];
         } else {
             GetComponent<Image>().sprite = unmaskedSprites[npcType];
         }
     }
 
+    void Update() {
+        if (GameController.instance.gameOver) {
+            Remove();
+            return;
+        }
+        float dt = Time.deltaTime;
+        timeToNextCough -= dt;
+        if (timeToNextCough <= 0) {
+            Cough();
+            timeToNextCough = Random.Range(5.0f, 10.0f);
+        }
+    }
+
     void FixedUpdate() {
+        if (GameController.instance.gameOver) {
+            return;
+        }
         float dt = Time.fixedDeltaTime;
         lifetime -= dt;
         if (waitTimer > 0) {
@@ -50,7 +77,11 @@ public class TownsfolkBehaviour : MonoBehaviour
         } else {
             stepTimer -= dt;
             rigidBody.MoveRotation(CodeToAngle(direction));
-            rigidBody.MovePosition(new Vector2(transform.position.x, transform.position.y) + CodeToVector2(direction) * speed * dt);
+            float speedScalar = 1.0f;
+            if (GameController.instance.majorWave) {
+                speedScalar = 1.5f;
+            }
+            rigidBody.MovePosition(new Vector2(transform.position.x, transform.position.y) + CodeToVector2(direction) * speed * dt * speedScalar);
         }
         if (stepTimer < 0) {
             transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
@@ -106,7 +137,60 @@ public class TownsfolkBehaviour : MonoBehaviour
         return vector;
     }
 
+    public void CheckMaskHit(Collider2D collider) {
+        if (isMasked == false) {
+            MaskBehaviour mask = collider.GetComponent<MaskBehaviour>();
+            if (mask != false) {
+                mask.hits++;
+                mask.lifespan /= 2.0f;
+                isMasked = true;
+                GetComponent<Image>().sprite = maskedSprites[npcType];
+                GameController.instance.score += 5;
+            }
+        }
+    }
+
+    void Cough() {
+        if (isSick && !isMasked) {
+            GameObject alert = Instantiate(coughAlertPrefab, transform.position + new Vector3(20.0f, 20.0f, 0.0f), Quaternion.identity, transform.parent);
+            AlertBehaviour alertBehaviour = alert.GetComponent<AlertBehaviour>();
+            alertBehaviour.SetLifetime(1.0f);
+
+            Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, 48.0f);
+            foreach (Collider2D collider in hitColliders) {
+                StallBehaviour stall = collider.GetComponent<StallBehaviour>();
+                if (stall != null) {
+                    stall.AddFilth();
+                }
+
+                TownsfolkBehaviour townsfolk = collider.GetComponent<TownsfolkBehaviour>();
+                if (townsfolk != null) {
+                    townsfolk.Infect();
+                }
+            }
+        }
+    }
+
+    public void Infect() {
+        if (isMasked || isSick || isVaccinated) {
+            return;
+        }
+        if (Random.Range(0.0f, 1.0f) < 0.6f) {
+            isSick = true;
+        }
+    }
+
     public void Remove() {
+        if (isSick) {
+            GameController.instance.newCases++;
+        }
+        if (!isMasked) {
+            GameController.instance.newCases += Random.Range(3, 10);
+            if (isSick) {
+                GameController.instance.newCases += Random.Range(5, 20);
+            }
+            GameController.instance.score -= 2;
+        }
         Destroy(gameObject);
     }
 }

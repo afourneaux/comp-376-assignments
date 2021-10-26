@@ -12,6 +12,7 @@ public class PlayerBehaviour : MonoBehaviour
     GameObject target;
     Rigidbody2D rigidBody;
     Animator animator;
+    public int masksToThrow = 3;
 
     void Start() {
         target = transform.Find("Target").gameObject;
@@ -87,7 +88,11 @@ public class PlayerBehaviour : MonoBehaviour
     }
 
     void ThrowMask() {
+        if (masksToThrow <= 0) {
+            return;
+        }
         if (Input.GetButtonDown("Fire1")) {
+            masksToThrow--;
             GameObject mask = Instantiate(maskPrefab, transform.position, Quaternion.identity, transform.parent);
             MaskBehaviour behaviour = mask.GetComponent<MaskBehaviour>();
             behaviour.direction = aimAt;
@@ -99,9 +104,10 @@ public class PlayerBehaviour : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision) {
         StallBehaviour stall = collision.gameObject.GetComponent<StallBehaviour>();
         if (stall != null) {
-            bool wasDirty = stall.Wipe();
-            if (wasDirty) {
+            float filthCleaned = stall.Wipe();
+            if (filthCleaned > 0) {
                 animator.Play("Throw");
+                GameController.instance.score += Mathf.RoundToInt(filthCleaned * 3);
             }
         }
     }

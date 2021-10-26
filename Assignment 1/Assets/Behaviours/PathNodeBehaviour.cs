@@ -39,7 +39,7 @@ public class PathNodeBehaviour : MonoBehaviour
     }
 
     IEnumerator DelayedTownsfolkAction(TownsfolkBehaviour townsfolk) {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
         int selection = Random.Range(0, options.Count);
         townsfolk.direction = options[selection];
 

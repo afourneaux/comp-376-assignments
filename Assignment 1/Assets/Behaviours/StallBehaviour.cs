@@ -6,7 +6,10 @@ using UnityEngine.UI;
 public class StallBehaviour : MonoBehaviour
 {
     float filth = 0.0f;     // Scale from 0.0 to 1.0;
+    float spreadTimer = 0.0f;
+    float spreadTime = 10.0f;
     GameObject filthLayer;
+    public GameObject AlertPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -22,14 +25,49 @@ public class StallBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameController.instance.gameOver) {
+            return;
+        }
+        float dt = Time.deltaTime;
+        spreadTimer -= dt;
+        if (spreadTimer <= 0) {
+            spreadTimer = spreadTime;
+            SpreadFilth();
+        }
         Color colour = filthLayer.GetComponent<Image>().color;
         colour.a = filth;
         filthLayer.GetComponent<Image>().color = colour;
     }
 
-    public bool Wipe() {
-        bool wasDirty = filth > 0.0f;
+    public float Wipe() {
+        float oldFilth = filth;
         filth = 0.0f;
-        return wasDirty;
+        return oldFilth;
+    }
+    
+    public void AddFilth() {
+        filth += 0.1f;
+        if (filth > 1.0f) {
+            filth = 1.0f;
+
+            Instantiate(AlertPrefab, transform.position, Quaternion.identity, transform.parent.parent).GetComponent<AlertBehaviour>().SetLifetime(5.0f);
+        }
+    }
+
+    void SpreadFilth() {
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, 100.0f);
+        foreach (Collider2D collider in hitColliders) {
+            if (Random.Range(0.0f, 1.0f) < filth) {
+                StallBehaviour stall = collider.GetComponent<StallBehaviour>();
+                if (stall != null) {
+                    stall.AddFilth();
+                }
+
+                TownsfolkBehaviour townsfolk = collider.GetComponent<TownsfolkBehaviour>();
+                if (townsfolk != null) {
+                    townsfolk.Infect();
+                }
+            }
+        }
     }
 }

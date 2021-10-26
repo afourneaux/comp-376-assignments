@@ -13,10 +13,18 @@ public class SpawnerBehaviour : MonoBehaviour
     }
 
     void Update() {
-        timeToNextSpawn -= Time.deltaTime;
+        if (GameController.instance.gameOver) {
+            return;
+        }
+        float dt = Time.deltaTime;
+        if (GameController.instance.majorWave) {
+            dt *= 10.0f;
+        }
+        timeToNextSpawn -= dt;
         if (timeToNextSpawn < 0) {
             GameObject townsfolk = Instantiate(NPCPrefab, transform.position, Quaternion.identity, transform.parent.parent);
             townsfolk.GetComponent<TownsfolkBehaviour>().direction = direction;
+
             timeToNextSpawn = Random.Range(20.0f, 30.0f);
         }
     }

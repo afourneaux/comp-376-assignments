@@ -6,11 +6,10 @@ public class MaskBehaviour : MonoBehaviour
 {
     float rotationSpeed = 360.0f;
     public Vector2 direction = new Vector2(0.0f, 0.0f);
-    float maxSpeed = 100.0f;   // TODO: Parameters file
+    float maxSpeed = 100.0f;        // TODO: Parameters file
     float speed;
-    float timeAlive = 0.0f;
-    float lifespan = 1.0f;      // TODO: Parameters file
-    int maxHits = 2;            // TODO: Parameters file
+    public float lifespan = 1.0f;   // TODO: Parameters file
+    int maxHits = 2;                // TODO: Parameters file
     public int hits = 0;
     GameObject maskImage;
 
@@ -24,11 +23,12 @@ public class MaskBehaviour : MonoBehaviour
 
     void Update()
     {
-        timeAlive += Time.deltaTime;
-        if (timeAlive >= lifespan) {
+        lifespan -= Time.deltaTime;
+        if (lifespan <= 0.0f) {
             Destroy(gameObject);
         }
         if (hits >= maxHits) {
+            GameController.instance.score += 5; // Increased score due to double shot
             Destroy(gameObject);
         }
     }
