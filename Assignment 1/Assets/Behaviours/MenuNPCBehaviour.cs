@@ -24,7 +24,7 @@ public class MenuNPCBehaviour : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider collider) {
+    void OnTriggerEnter2D(Collider2D collider) {
         MaskBehaviour mask = collider.GetComponent<MaskBehaviour>();
         if (mask != null) {
             mask.hits++;

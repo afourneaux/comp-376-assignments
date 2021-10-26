@@ -6,7 +6,7 @@ public class MaskBehaviour : MonoBehaviour
 {
     float rotationSpeed = 360.0f;
     public Vector2 direction = new Vector2(0.0f, 0.0f);
-    float maxSpeed = 1000.0f;   // TODO: Parameters file
+    float maxSpeed = 100.0f;   // TODO: Parameters file
     float speed;
     float timeAlive = 0.0f;
     float lifespan = 1.0f;      // TODO: Parameters file
@@ -17,17 +17,14 @@ public class MaskBehaviour : MonoBehaviour
     void Start() {
         maskImage = transform.Find("MaskImage").gameObject;
         speed = maxSpeed;
+        Rigidbody2D rigidBody = GetComponent<Rigidbody2D>();
+        rigidBody.AddForce(direction * maxSpeed, ForceMode2D.Impulse);
+        rigidBody.AddTorque(rotationSpeed);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        float dt = Time.deltaTime;
-        timeAlive += dt;
-        transform.Translate(direction.x * speed * dt, direction.y * speed * dt, 0.0f);
-        speed -= dt * (maxSpeed / lifespan);
-        speed = Mathf.Max(0, speed);
-        maskImage.transform.Rotate(new Vector3(0.0f, 0.0f, rotationSpeed * dt));
+        timeAlive += Time.deltaTime;
         if (timeAlive >= lifespan) {
             Destroy(gameObject);
         }
