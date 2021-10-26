@@ -11,6 +11,8 @@ public class GameController : MonoBehaviour
     int wave = 0;
     float timeToEnd = 300.0f;
     float warningFlashTimer = 0.0f;
+    float coughDelay = 10.0f;
+    float timeToNextCoughSound = 0.0f;
     bool warningFlashOn = false;
     public bool majorWave = false;
     public bool gameOver = false;
@@ -45,6 +47,8 @@ public class GameController : MonoBehaviour
         playerBehaviour = player.GetComponent<PlayerBehaviour>();
         maskAlert = cleaningBarrel.transform.Find("MaskAlert").gameObject;
         parameters = new Parameters();
+        timeToNextCoughSound = coughDelay;
+        AudioController.instance.PlaySFX("endgame");
 
         timeToMajorWave = Random.Range(timeToEnd / 6.0f, timeToEnd / 3.0f);
     }
@@ -54,6 +58,11 @@ public class GameController : MonoBehaviour
         float dt = Time.deltaTime;
         timeToEnd -= dt;
         timeToMajorWave -= dt;
+        timeToNextCoughSound -= dt;
+        if (timeToNextCoughSound <= 0.0f) {
+            AudioController.instance.PlaySFX("cough" + Random.Range(1, 5));
+            timeToNextCoughSound = coughDelay;
+        }
 
         if (gameOver) {
             clockTextBox.text = "0 : 00";
@@ -67,11 +76,12 @@ public class GameController : MonoBehaviour
             clockTextBox.text = clockString;
         }
 
-        if (timeToEnd <= 0) {
+        if (timeToEnd <= 0 && gameOver == false) {
             gameOver = true;
             endscreen.SetActive(true);
             endscreen.transform.Find("Backdrop/ScoreText").GetComponent<TMPro.TMP_Text>().text = score.ToString();
             endscreen.transform.Find("Backdrop/CasesText").GetComponent<TMPro.TMP_Text>().text = newCases.ToString();
+            AudioController.instance.PlaySFX("endgame");
         }
 
         if (wave < WAVES || majorWave) {
@@ -80,6 +90,7 @@ public class GameController : MonoBehaviour
                     wave++;
                     majorWave = true;
                     timeToMajorWave = 10.0f;
+                    AudioController.instance.PlaySFX("amazingsales");
                 } else {
                     majorWave = false;
                     timeToMajorWave = Random.Range(timeToEnd / 4.0f, timeToEnd / 2.0f);

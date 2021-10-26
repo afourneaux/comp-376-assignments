@@ -101,6 +101,7 @@ public class PlayerBehaviour : MonoBehaviour
             behaviour.direction = aimAt;
             Physics2D.IgnoreCollision(mask.GetComponent<Collider2D>(), GetComponent<Collider2D>());
             animator.Play("Throw");
+            AudioController.instance.PlaySFX("fwoof");
         }
     }
 
@@ -111,6 +112,7 @@ public class PlayerBehaviour : MonoBehaviour
             if (filthCleaned > 0) {
                 animator.Play("Throw");
                 GameController.instance.score += Mathf.RoundToInt(filthCleaned * 3);
+                AudioController.instance.PlaySFX("squeak");
             }
         }
     }

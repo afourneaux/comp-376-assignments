@@ -48,6 +48,7 @@ public class StallBehaviour : MonoBehaviour
     public void AddFilth() {
         filth += 0.1f;
         if (filth >= 1.0f) {
+            GameController.instance.score -= 1;
             filth = 1.0f;
 
             Instantiate(AlertPrefab, transform.position, Quaternion.identity, transform.parent.parent).GetComponent<AlertBehaviour>().SetLifetime(5.0f);

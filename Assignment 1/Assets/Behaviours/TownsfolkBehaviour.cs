@@ -145,6 +145,7 @@ public class TownsfolkBehaviour : MonoBehaviour
                 isMasked = true;
                 GetComponent<Image>().sprite = maskedSprites[npcType];
                 GameController.instance.score += 5;
+                AudioController.instance.PlaySFX("sss");
             }
         }
     }
@@ -176,6 +177,7 @@ public class TownsfolkBehaviour : MonoBehaviour
         }
         if (Random.Range(0.0f, 1.0f) < GameController.instance.parameters.INFECT_CHANCE[OptionsController.contagionDifficulty]) {
             isSick = true;
+            GameController.instance.score -= 2;
         }
     }
 

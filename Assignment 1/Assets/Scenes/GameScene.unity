@@ -2873,6 +2873,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1150436410}
     m_Modifications:
+    - target: {fileID: 6929715050339785684, guid: f66e9b7b9eae935468d92fb24004ac59,
+        type: 3}
+      propertyPath: m_text
+      value: Alexander Fourneaux, 40022711\nConcordia University, Fall 2021\nWith
+        music by Guillaume de Machaut and Algal the Bard
+      objectReference: {fileID: 0}
     - target: {fileID: 6929715051055787411, guid: f66e9b7b9eae935468d92fb24004ac59,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -7600,7 +7606,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 156.3, y: -14.9}
+  m_AnchoredPosition: {x: 170.8, y: -14.9}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!50 &1251724973

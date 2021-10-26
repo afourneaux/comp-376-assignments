@@ -11,25 +11,35 @@ public class MenuButtonHandler : MonoBehaviour
     public Slider SFXSlider;
 
     void Start() {
-        OnContagionDifficultySelect(OptionsController.contagionDifficulty);
-        OnMaskCapacitySelect(OptionsController.maskCapacity);
+        ChangeContagionDifficulty(OptionsController.contagionDifficulty);
+        ChangeMaskCapacity(OptionsController.maskCapacity);
         musicSlider.value = OptionsController.musicVolume;
         SFXSlider.value = OptionsController.sfxVolume;
     }
 
     public void OnPlayButtonClicked() {
+        AudioController.instance.PlaySFX("clack");
+        Time.timeScale = 1;
         SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
     }
 
     public void OnMenuButtonClicked() {
+        AudioController.instance.PlaySFX("clack");
+        Time.timeScale = 1;
         SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 
     public void OnOptionsButtonClicked() {
+        AudioController.instance.PlaySFX("clack");
         optionsMenu.SetActive(!optionsMenu.activeSelf);
     }
 
     public void OnContagionDifficultySelect(int index) {
+        AudioController.instance.PlaySFX("ting");
+        ChangeContagionDifficulty(index);
+    }
+
+    void ChangeContagionDifficulty(int index) {
         bool active1 = false;
         bool active2 = false;
         bool active3 = false;
@@ -56,6 +66,11 @@ public class MenuButtonHandler : MonoBehaviour
     }
 
     public void OnMaskCapacitySelect(int index) {
+        AudioController.instance.PlaySFX("ting");
+        ChangeMaskCapacity(index);
+    }
+
+    void ChangeMaskCapacity(int index) {
         bool active1 = false;
         bool active2 = false;
         bool active3 = false;
