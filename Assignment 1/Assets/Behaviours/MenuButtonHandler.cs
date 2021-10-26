@@ -34,6 +34,10 @@ public class MenuButtonHandler : MonoBehaviour
         optionsMenu.SetActive(!optionsMenu.activeSelf);
     }
 
+    public void OnQuitButtonClicked() {
+        Application.Quit();
+    }
+
     public void OnContagionDifficultySelect(int index) {
         AudioController.instance.PlaySFX("ting");
         ChangeContagionDifficulty(index);
